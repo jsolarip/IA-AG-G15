@@ -66,7 +66,7 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 #    'tools.HallOfFame(1)' crea un objeto que almacenará al mejor individuo encontrado
 #    a lo largo de todas las generaciones. El '1' significa que solo guardará al mejor.
 #    Si quisieras guardar los 5 mejores, usarías tools.HallOfFame(5).
-hof = tools.HallOfFame(1)
+hof = tools.HallOfFame(7)
 
 # B. Estadísticas:
 #    'tools.Statistics' nos permite llevar un registro de ciertas métricas de la
@@ -128,13 +128,19 @@ def ejecutar_ag():
 if __name__ == "__main__":
     # Ejecutamos el algoritmo genético
     poblacion_final, libro_estadisticas, salon_fama = ejecutar_ag()
-
+    """
     # Imprimimos el mejor individuo encontrado
     mejor_individuo = salon_fama[0] # El HallOfFame guarda al mejor en la posición 0
     
     print("\n--- MEJOR PERFIL DE PILOTO ENCONTRADO ---")
     imprimir_perfil_piloto(mejor_individuo) # Usamos nuestra función de config_piloto.py
     print(f"Aptitud del mejor perfil: {mejor_individuo.fitness.values[0]:.2f}")
+    """
+    # Para imprimir en caso de usar más de 1 elemento en el Hall of Fame
+    for piloto_hof in salon_fama:
+        print("\n --- SUGERENCIA PILOTO CANDIDATO ---")
+        imprimir_perfil_piloto(piloto_hof) # Usamos nuestra función de config_piloto.py
+        print(f"Aptitud del perfil sugerido: {piloto_hof.fitness.values[0]:.2f}")
 
     # Graficar la evolución de la aptitud
     gen = libro_estadisticas.select("gen")

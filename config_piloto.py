@@ -109,7 +109,7 @@ def evaluar_aptitud_piloto(cromosoma_bits):
     elif perfil["A1_Experiencia"] == "Establecido": bonificaciones_individuales += 2
     elif perfil["A1_Experiencia"] == "Veterano": bonificaciones_individuales += 1
 
-    if perfil["A2_EstiloConduccion"] == "Agresivo Controlado": bonificaciones_individuales += 2
+    if perfil["A2_EstiloConduccion"] == "Agresivo Controlado": bonificaciones_individuales += 4 # antes era 2
     elif perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico": bonificaciones_individuales += 2
 
     if perfil["A3_VelocidadPura"] == "Excepcional": bonificaciones_individuales += 4
@@ -128,8 +128,8 @@ def evaluar_aptitud_piloto(cromosoma_bits):
     if perfil["A7_EncajeMarca"] == "Encaje Perfecto": bonificaciones_individuales += 3
     elif perfil["A7_EncajeMarca"] == "Buen Encaje": bonificaciones_individuales += 2
 
-    if perfil["A8_ExigenciaSalarial"] == "Salario Muy Bajo": bonificaciones_individuales += 3
-    elif perfil["A8_ExigenciaSalarial"] == "Salario Bajo": bonificaciones_individuales += 2
+    if perfil["A8_ExigenciaSalarial"] == "Salario Muy Bajo": bonificaciones_individuales += 2 # antes 3
+    elif perfil["A8_ExigenciaSalarial"] == "Salario Bajo": bonificaciones_individuales += 1 # antes 2
 
     # --- B. Bonificaciones por Sinergias (BDs) ---
     # BD1
@@ -144,7 +144,7 @@ def evaluar_aptitud_piloto(cromosoma_bits):
     if ((perfil["A1_Experiencia"] in ["Novato", "Joven Promesa"] or 
          perfil["A7_EncajeMarca"] in ["Buen Encaje", "Encaje Perfecto"]) and
         (perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"])):
-        bonificaciones_sinergia += 7
+        bonificaciones_sinergia += 5 # antes 7
     # BD4
     if (perfil["A5_FeedbackTecnico"] == "Fuerte" and
         perfil["A6_MentalidadEquipo"] == "Jugador de Equipo Nato"):
@@ -177,7 +177,7 @@ def evaluar_aptitud_piloto(cromosoma_bits):
     # INC1
     if (perfil["A1_Experiencia"] == "Veterano" and 
         perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]):
-        penalizaciones += 6 
+        penalizaciones += 9 # antes era 6
     # INC2
     if (perfil["A3_VelocidadPura"] == "Excepcional" and 
         perfil["A6_MentalidadEquipo"] == "Totalmente Alineado con el Equipo"):
@@ -197,7 +197,7 @@ def evaluar_aptitud_piloto(cromosoma_bits):
     if perfil["A5_FeedbackTecnico"] == "Excepcional": condiciones_elite_inc5 += 1
     if perfil["A7_EncajeMarca"] == "Encaje Perfecto": condiciones_elite_inc5 += 1
     if condiciones_elite_inc5 >= 2 and perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]:
-        penalizaciones += 9
+        penalizaciones += 13 # antes 9
     # INC6
     if (perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico" and 
         perfil["A5_FeedbackTecnico"] == "Limitada"):
@@ -228,7 +228,7 @@ def evaluar_aptitud_piloto(cromosoma_bits):
         perfil["A7_EncajeMarca"] in ["Buen Encaje", "Encaje Perfecto"] and
         (perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"] or 
          perfil["A4_ConsistenciaCarrera"] in ["Muy Consistente", "Extremadamente Consistente"])):
-        penalizaciones += 3
+        penalizaciones += 6 # antes era 3
     # INC13
     if (perfil["A6_MentalidadEquipo"] in ["Jugador de Equipo Nato", "Totalmente Alineado con el Equipo"] and
         perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"]):
@@ -238,7 +238,7 @@ def evaluar_aptitud_piloto(cromosoma_bits):
         perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"] and
         perfil["A4_ConsistenciaCarrera"] in ["Muy Consistente", "Extremadamente Consistente"] and
         perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]):
-        penalizaciones += 5
+        penalizaciones += 8 # antes era 5
     # INC15
     if (perfil["A1_Experiencia"] == "Veterano" and
         perfil["A3_VelocidadPura"] == "Excepcional" and
@@ -264,6 +264,12 @@ def evaluar_aptitud_piloto(cromosoma_bits):
         perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"] and 
         perfil["A4_ConsistenciaCarrera"] != "Extremadamente Consistente"):
         penalizaciones += 4
+    #INC20
+    if (perfil["A4_ConsistenciaCarrera"] in ["Extremadamente Consistente","Muy Consistente"] and
+        perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]):
+        penalizaciones += 9
+
+    # TODO (al menos considerar): salvar de restricciones de salarios muy bajos a los novatos, o premiarlos x eso
         
     aptitud_final = (puntaje_base + 
                      bonificaciones_individuales + 
