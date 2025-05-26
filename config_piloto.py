@@ -99,101 +99,178 @@ def evaluar_aptitud_piloto(cromosoma_bits):
     """
     perfil = decodificar_cromosoma(cromosoma_bits)
     
-    puntaje_base = 0 # Puntaje base inicial, puede ser ajustado según sea necesario
-    bonificaciones = 0
-    penalizaciones = 0
+    puntaje_base = 0
+    bonificaciones_individuales = 0
+    bonificaciones_sinergia = 0
+    penalizaciones = 0 # Un solo acumulador para todas las penalizaciones
 
-    # --- A. Características Deseables (Bonificaciones) ---
+    # --- A. Bonificaciones por Atributos Individuales Positivos (BIs) ---
+    if perfil["A1_Experiencia"] == "Joven Promesa": bonificaciones_individuales += 2
+    elif perfil["A1_Experiencia"] == "Establecido": bonificaciones_individuales += 2
+    elif perfil["A1_Experiencia"] == "Veterano": bonificaciones_individuales += 1
 
-    # BD1: Rendimiento sólido en pista 
+    if perfil["A2_EstiloConduccion"] == "Agresivo Controlado": bonificaciones_individuales += 2
+    elif perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico": bonificaciones_individuales += 2
+
+    if perfil["A3_VelocidadPura"] == "Excepcional": bonificaciones_individuales += 4
+    elif perfil["A3_VelocidadPura"] == "Muy Buena": bonificaciones_individuales += 2
+
+    if perfil["A4_ConsistenciaCarrera"] == "Extremadamente Consistente": bonificaciones_individuales += 4
+    elif perfil["A4_ConsistenciaCarrera"] == "Muy Consistente": bonificaciones_individuales += 2
+
+    if perfil["A5_FeedbackTecnico"] == "Excepcional": bonificaciones_individuales += 4
+    elif perfil["A5_FeedbackTecnico"] == "Fuerte": bonificaciones_individuales += 2
+
+    if perfil["A6_MentalidadEquipo"] == "Jugador de Equipo Nato": bonificaciones_individuales += 2
+    elif perfil["A6_MentalidadEquipo"] == "Totalmente Alineado con el Equipo": bonificaciones_individuales += 3
+    elif perfil["A6_MentalidadEquipo"] == "Equilibrado": bonificaciones_individuales += 1
+
+    if perfil["A7_EncajeMarca"] == "Encaje Perfecto": bonificaciones_individuales += 3
+    elif perfil["A7_EncajeMarca"] == "Buen Encaje": bonificaciones_individuales += 2
+
+    if perfil["A8_ExigenciaSalarial"] == "Salario Muy Bajo": bonificaciones_individuales += 3
+    elif perfil["A8_ExigenciaSalarial"] == "Salario Bajo": bonificaciones_individuales += 2
+
+    # --- B. Bonificaciones por Sinergias (BDs) ---
+    # BD1
     if (perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"] and 
         perfil["A4_ConsistenciaCarrera"] in ["Muy Consistente", "Extremadamente Consistente"]):
-        bonificaciones += 10
-
-    # BD2: Mentalidad constructiva para el equipo 
+        bonificaciones_sinergia += 10
+    # BD2
     if (perfil["A6_MentalidadEquipo"] in ["Jugador de Equipo Nato", "Totalmente Alineado con el Equipo"] and
         perfil["A5_FeedbackTecnico"] in ["Fuerte", "Excepcional"]):
-        bonificaciones += 8
-
-    # BD3: Perfil Red Bull (juventud/marca con costo razonable) 
+        bonificaciones_sinergia += 8
+    # BD3
     if ((perfil["A1_Experiencia"] in ["Novato", "Joven Promesa"] or 
          perfil["A7_EncajeMarca"] in ["Buen Encaje", "Encaje Perfecto"]) and
-        (perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"])): # El doc dice "Salario Muy Bajo" O "Salario Bajo"
-        bonificaciones += 7
-
-    # BD4: Compañero mecánico 
-    if (perfil["A5_FeedbackTecnico"] == "Fuerte" and # El doc dice "Fuerte" específicamente
-        perfil["A6_MentalidadEquipo"] == "Jugador de Equipo Nato"): # El doc dice "Jugador de Equipo Nato" específicamente
-        bonificaciones += 9
-
-    # BD5: Futuro rentable (Promesa con carisma y sueldo razonable) 
-    if (perfil["A1_Experiencia"] == "Joven Promesa" and # El doc dice "Joven Promesa" específicamente
+        (perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"])):
+        bonificaciones_sinergia += 7
+    # BD4
+    if (perfil["A5_FeedbackTecnico"] == "Fuerte" and
+        perfil["A6_MentalidadEquipo"] == "Jugador de Equipo Nato"):
+        bonificaciones_sinergia += 9
+    # BD5
+    if (perfil["A1_Experiencia"] == "Joven Promesa" and
         (perfil["A7_EncajeMarca"] in ["Buen Encaje", "Encaje Perfecto"]) and
-        perfil["A8_ExigenciaSalarial"] == "Salario Bajo"): # El doc dice "Salario Bajo" específicamente
-        bonificaciones += 7
+        perfil["A8_ExigenciaSalarial"] == "Salario Bajo"):
+        bonificaciones_sinergia += 7
+    # BD6
+    if (perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico" and
+        perfil["A4_ConsistenciaCarrera"] == "Muy Consistente"):
+        bonificaciones_sinergia += 6
+    # BD7 
+    if (perfil["A1_Experiencia"] in ["Establecido", "Veterano"] and
+        perfil["A5_FeedbackTecnico"] == "Excepcional" and
+        perfil["A4_ConsistenciaCarrera"] in ["Muy Consistente", "Extremadamente Consistente"]):
+        bonificaciones_sinergia += 10
+    # BD8 
+    if (perfil["A1_Experiencia"] == "Veterano" and
+        perfil["A7_EncajeMarca"] in ["Buen Encaje", "Encaje Perfecto"] and
+        perfil["A6_MentalidadEquipo"] in ["Jugador de Equipo Nato", "Totalmente Alineado con el Equipo"]):
+        bonificaciones_sinergia += 8
+    # BD9 
+    if ((perfil["A3_VelocidadPura"] == "Excepcional" or perfil["A5_FeedbackTecnico"] == "Excepcional") and
+        perfil["A8_ExigenciaSalarial"] == "Salario Medio"):
+        bonificaciones_sinergia += 4
         
-    # BD6: Adaptabilidad y consistencia 
-    if (perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico" and # El doc dice "Adaptable Camaleónico" específicamente
-        perfil["A4_ConsistenciaCarrera"] == "Muy Consistente"): # El doc dice "Muy Consistente" específicamente
-        bonificaciones += 6
-
-    # --- B. Reglas de Incompatibilidad (Penalizaciones) ---
-
-    # INC1: Veterano excesivamente barato 
+    # --- C. Reglas de Incompatibilidad (Penalizaciones - INCs) ---
+    # INC1
     if (perfil["A1_Experiencia"] == "Veterano" and 
         perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]):
         penalizaciones += 6 
-
-    # INC2: Estrella totalmente sumisa 
+    # INC2
     if (perfil["A3_VelocidadPura"] == "Excepcional" and 
         perfil["A6_MentalidadEquipo"] == "Totalmente Alineado con el Equipo"):
         penalizaciones += 5
-
-    # INC3: Novato con conocimiento técnico de élite 
+    # INC3
     if (perfil["A1_Experiencia"] == "Novato" and 
         perfil["A5_FeedbackTecnico"] == "Excepcional"):
         penalizaciones += 4
-        
-    # INC4: Agresividad y sumisión total 
+    # INC4
     if (perfil["A6_MentalidadEquipo"] in ["Jugador de Equipo Nato", "Totalmente Alineado con el Equipo"] and 
         perfil["A2_EstiloConduccion"] == "Agresivo Controlado"):
         penalizaciones += 3
-        
-    # INC5: El "super talento irrealmente barato" 
-    condiciones_elite_cumplidas_inc5 = 0
-    if perfil["A3_VelocidadPura"] == "Excepcional": condiciones_elite_cumplidas_inc5 += 1
-    if perfil["A4_ConsistenciaCarrera"] == "Extremadamente Consistente": condiciones_elite_cumplidas_inc5 += 1
-    if perfil["A5_FeedbackTecnico"] == "Excepcional": condiciones_elite_cumplidas_inc5 += 1
-    if perfil["A7_EncajeMarca"] == "Encaje Perfecto": condiciones_elite_cumplidas_inc5 += 1
-    
-    if condiciones_elite_cumplidas_inc5 >= 3 and perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]:
-        penalizaciones += 10
-        
-    # INC6: Adaptable sin buen feedback 
+    # INC5
+    condiciones_elite_inc5 = 0
+    if perfil["A3_VelocidadPura"] == "Excepcional": condiciones_elite_inc5 += 1
+    if perfil["A4_ConsistenciaCarrera"] == "Extremadamente Consistente": condiciones_elite_inc5 += 1
+    if perfil["A5_FeedbackTecnico"] == "Excepcional": condiciones_elite_inc5 += 1
+    if perfil["A7_EncajeMarca"] == "Encaje Perfecto": condiciones_elite_inc5 += 1
+    if condiciones_elite_inc5 >= 2 and perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]:
+        penalizaciones += 9
+    # INC6
     if (perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico" and 
         perfil["A5_FeedbackTecnico"] == "Limitada"):
         penalizaciones += 4
-
-    # INC7: Salario alto con baja imagen 
+    # INC7
     if (perfil["A8_ExigenciaSalarial"] == "Salario Alto" and 
         perfil["A7_EncajeMarca"] == "Bajo Encaje"):
         penalizaciones += 5
-
-    # INC8: Mucha experiencia, poca consistencia 
+    # INC8
     if (perfil["A1_Experiencia"] in ["Establecido", "Veterano"] and 
         perfil["A4_ConsistenciaCarrera"] == "Inconsistente"):
         penalizaciones += 4
-
-    # INC9: Calculador pero excepcional en clasificación pura 
+    # INC9
     if (perfil["A2_EstiloConduccion"] == "Consistente y Calculador" and 
         perfil["A3_VelocidadPura"] == "Excepcional"):
         penalizaciones += 3
+    # INC10
+    if (perfil["A1_Experiencia"] in ["Novato", "Joven Promesa"] and
+        perfil["A5_FeedbackTecnico"] in ["Fuerte", "Excepcional"]):
+        penalizaciones += 2
+    # INC11
+    if (perfil["A3_VelocidadPura"] == "Excepcional" and
+        perfil["A4_ConsistenciaCarrera"] == "Extremadamente Consistente"):
+        penalizaciones += 3
+    # INC12
+    if (perfil["A1_Experiencia"] == "Joven Promesa" and
+        perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico" and
+        perfil["A7_EncajeMarca"] in ["Buen Encaje", "Encaje Perfecto"] and
+        (perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"] or 
+         perfil["A4_ConsistenciaCarrera"] in ["Muy Consistente", "Extremadamente Consistente"])):
+        penalizaciones += 3
+    # INC13
+    if (perfil["A6_MentalidadEquipo"] in ["Jugador de Equipo Nato", "Totalmente Alineado con el Equipo"] and
+        perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"]):
+        penalizaciones += 4
+    # INC14
+    if (perfil["A1_Experiencia"] in ["Novato", "Joven Promesa"] and
+        perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"] and
+        perfil["A4_ConsistenciaCarrera"] in ["Muy Consistente", "Extremadamente Consistente"] and
+        perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]):
+        penalizaciones += 5
+    # INC15
+    if (perfil["A1_Experiencia"] == "Veterano" and
+        perfil["A3_VelocidadPura"] == "Excepcional" and
+        perfil["A8_ExigenciaSalarial"] == "Salario Alto" and
+        perfil["A6_MentalidadEquipo"] in ["Equilibrado", "Primariamente Individualista"]):
+        penalizaciones += 9
+    # INC16
+    if (perfil["A1_Experiencia"] in ["Establecido", "Veterano"] and
+        perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"] and
+        perfil["A4_ConsistenciaCarrera"] in ["Muy Consistente", "Extremadamente Consistente"]):
+        penalizaciones += 6
+    # INC17
+    if (perfil["A1_Experiencia"] in ["Establecido", "Veterano"] and
+        perfil["A5_FeedbackTecnico"] in ["Fuerte", "Excepcional"] and
+        perfil["A8_ExigenciaSalarial"] in ["Salario Medio", "Salario Alto"]):
+        penalizaciones += 7
+    # INC18
+    if (perfil["A1_Experiencia"] == "Veterano" and
+        perfil["A2_EstiloConduccion"] == "Agresivo Controlado"):
+        penalizaciones += 5
+    # INC19 (Ajustada)
+    if (perfil["A2_EstiloConduccion"] == "Agresivo Controlado" and
+        perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"] and 
+        perfil["A4_ConsistenciaCarrera"] != "Extremadamente Consistente"):
+        penalizaciones += 4
         
-    # Cálculo Final de Aptitud 
-    aptitud_final = puntaje_base + bonificaciones - penalizaciones
+    aptitud_final = (puntaje_base + 
+                     bonificaciones_individuales + 
+                     bonificaciones_sinergia - 
+                     penalizaciones)
     
-    # DEAP espera que la función de aptitud devuelva una tupla
-    return (max(0, aptitud_final),) # Asegura que la aptitud no sea negativa, lo cual es buena práctica
+    return (max(0, aptitud_final),)
 
 
 
@@ -209,8 +286,8 @@ def imprimir_perfil_piloto(cromosoma_bits):
     print(f"Aptitud Bruta (ejemplo): {evaluar_aptitud_piloto(cromosoma_bits)[0]}") # Solo para mostrar, la aptitud se asigna en el AG
     print("-----------------------------")
 
-""" # --- PARA PROBAR ESTE ARCHIVO (puedes borrar o comentar después) ---
-import random # Necesitarás importar random aquí si no está ya al inicio del archivo
+# --- PARA PROBAR ESTE ARCHIVO (puedes borrar o comentar después) ---
+""" import random 
 
 print("--- INICIO DE PRUEBA DE config_piloto.py ---")
 
@@ -230,4 +307,4 @@ except KeyError as ke: # Captura errores si una clave de bits no se encuentra en
 except Exception as e: # Captura cualquier otro error
     print(f"Ocurrió un error inesperado: {e}")
     
-print("--- FIN DE PRUEBA DE config_piloto.py ---") """
+print("--- FIN DE PRUEBA DE config_piloto.py ---")  """
