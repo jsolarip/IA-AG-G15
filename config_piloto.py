@@ -1,5 +1,3 @@
-# config_piloto.py
-
 # --- Definición de Atributos y sus Valores ---
 # Estos diccionarios nos ayudarán a decodificar los bits del cromosoma
 # en valores legibles y a usarlos en la función de aptitud.
@@ -211,7 +209,7 @@ def imprimir_perfil_piloto(cromosoma_bits):
     print(f"Aptitud Bruta (ejemplo): {evaluar_aptitud_piloto(cromosoma_bits)[0]}") # Solo para mostrar, la aptitud se asigna en el AG
     print("-----------------------------")
 
-# --- PARA PROBAR ESTE ARCHIVO (puedes borrar o comentar después) ---
+""" # --- PARA PROBAR ESTE ARCHIVO (puedes borrar o comentar después) ---
 import random # Necesitarás importar random aquí si no está ya al inicio del archivo
 
 print("--- INICIO DE PRUEBA DE config_piloto.py ---")
@@ -232,4 +230,4 @@ except KeyError as ke: # Captura errores si una clave de bits no se encuentra en
 except Exception as e: # Captura cualquier otro error
     print(f"Ocurrió un error inesperado: {e}")
     
-print("--- FIN DE PRUEBA DE config_piloto.py ---")
+print("--- FIN DE PRUEBA DE config_piloto.py ---") """
