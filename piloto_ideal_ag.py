@@ -3,7 +3,7 @@ from deap import base, creator, tools, algorithms #
 import numpy # Para estadísticas
 import matplotlib.pyplot as plt # Para gráficos
 # --- Importamos desde nuestro archivo de configuración del problema ---
-from config_piloto import LONGITUD_CROMOSOMA, evaluar_aptitud_piloto, imprimir_perfil_piloto 
+from config_piloto import LONGITUD_CROMOSOMA, evaluar_aptitud_piloto, imprimir_perfil_piloto, evaluar_aptitud_piloto_nueva
 
 # --- 1. Definición de Tipos  ---
 # El objetivo es MAXIMIZAR la aptitud, así que los pesos son positivos (1.0)
@@ -35,7 +35,10 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 #    Le decimos a DEAP que la función que debe usar para evaluar la aptitud
 #    de cada individuo se llama 'evaluar_aptitud_piloto' (la que creamos en config_piloto.py).
 #    DEAP llamará a esta función pasándole un individuo (un cromosoma de 16 bits).
-toolbox.register("evaluate", evaluar_aptitud_piloto)
+
+#toolbox.register("evaluate", evaluar_aptitud_piloto)
+toolbox.register("evaluate", evaluar_aptitud_piloto_nueva)
+
 
 # B. Operador de Cruce (Crossover):
 #    Registramos la operación de cruce. 'tools.cxTwoPoint' es un cruce de dos puntos estándar.
