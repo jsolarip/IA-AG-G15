@@ -334,28 +334,32 @@ def evaluar_aptitud_piloto_nueva(cromosoma_bits):
     # --- Bonificaciones Individuales ---
     #BI1
     if perfil["A1_Experiencia"] == "Joven Promesa": bonificaciones_individuales += 2
-    elif perfil["A1_Experiencia"] == "Establecido": bonificaciones_individuales += 2
-    elif perfil["A1_Experiencia"] == "Veterano": bonificaciones_individuales += 1
+    elif perfil["A1_Experiencia"] == "Establecido": bonificaciones_individuales += 1
+    elif perfil["A1_Experiencia"] == "Veterano": bonificaciones_individuales += 2
     #BI2
     if perfil["A2_EstiloConduccion"] == "Agresivo Controlado": bonificaciones_individuales += 2
     elif perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico": bonificaciones_individuales += 1
     if perfil["A2_EstiloConduccion"] == "Consistente y Calculador": bonificaciones_individuales += 1
-    elif perfil["A2_EstiloConduccion"] == "Técnico y Metódico": bonificaciones_individuales += 1
+    elif (perfil["A2_EstiloConduccion"] == "Técnico y Metódico" and
+        perfil["A5_FeedbackTecnico"] in ["Adecuada", "Fuerte"]): bonificaciones_individuales += 1 # complemento logico como para premiar ese estilo
     #BI3
-    if perfil["A3_VelocidadPura"] == "Excepcional": bonificaciones_individuales += 4
+    if perfil["A3_VelocidadPura"] == "Excepcional": bonificaciones_individuales += 3
     elif perfil["A3_VelocidadPura"] == "Muy Buena": bonificaciones_individuales += 2
     #BI4
     if perfil["A4_ConsistenciaCarrera"] == "Extremadamente Consistente": bonificaciones_individuales += 4
     elif perfil["A4_ConsistenciaCarrera"] == "Muy Consistente": bonificaciones_individuales += 2
-    if perfil["A4_ConsistenciaCarrera"] == "Algo Consistente": bonificaciones_individuales += 1
+    if (perfil["A4_ConsistenciaCarrera"] == "Algo Consistente" and
+        perfil["A1_Experiencia"] in ["Novato", "Joven Promesa"]): bonificaciones_individuales += 1  # Coherente con curva de aprendizaje, no habria por que sumarle este punto por poca consistencia para un establecido o veterano
+
     #BI5
     if perfil["A5_FeedbackTecnico"] == "Excepcional": bonificaciones_individuales += 4
     elif perfil["A5_FeedbackTecnico"] == "Fuerte": bonificaciones_individuales += 2
-    if perfil["A5_FeedbackTecnico"] == "Adecuada": bonificaciones_individuales += 1
+    if perfil["A5_FeedbackTecnico"] == "Adecuada" and perfil["A1_Experiencia"] != "Veterano": bonificaciones_individuales += 1 # no es logico un veterano con feedback flojito
     #BI6
     if perfil["A6_MentalidadEquipo"] == "Jugador de Equipo Nato": bonificaciones_individuales += 2
     elif perfil["A6_MentalidadEquipo"] == "Totalmente Alineado con el Equipo": bonificaciones_individuales += 3
-    elif perfil["A6_MentalidadEquipo"] == "Equilibrado": bonificaciones_individuales += 1
+    elif (perfil["A6_MentalidadEquipo"] == "Equilibrado" and
+        perfil["A2_EstiloConduccion"] != "Agresivo Controlado"): bonificaciones_individuales += 1 # tranquilo sin entrar en conflicto
     #BI7
     if perfil["A7_EncajeMarca"] == "Encaje Perfecto": bonificaciones_individuales += 3
     elif perfil["A7_EncajeMarca"] == "Buen Encaje": bonificaciones_individuales += 2
@@ -381,8 +385,9 @@ def evaluar_aptitud_piloto_nueva(cromosoma_bits):
         bonificaciones_sinergia += 6
     #BD4
     if (perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico" and
-        perfil["A4_ConsistenciaCarrera"] == "Muy Consistente"):
-        bonificaciones_sinergia += 6
+        perfil["A4_ConsistenciaCarrera"] == "Muy Consistente" and
+        perfil["A5_FeedbackTecnico"] in ["Fuerte", "Excepcional"]):
+        bonificaciones_sinergia += 5
     #BD5
     if (perfil["A1_Experiencia"] in ["Establecido", "Veterano"] and
         perfil["A5_FeedbackTecnico"] == "Excepcional" and
@@ -395,7 +400,7 @@ def evaluar_aptitud_piloto_nueva(cromosoma_bits):
         perfil["A6_MentalidadEquipo"] in ["Jugador de Equipo Nato", "Totalmente Alineado con el Equipo"]):
         bonificaciones_sinergia += 8
     #BD7
-    if ((perfil["A3_VelocidadPura"] == "Excepcional" or perfil["A5_FeedbackTecnico"] == "Excepcional") and
+    if ((perfil["A3_VelocidadPura"] == "Excepcional" and perfil["A5_FeedbackTecnico"] == "Excepcional") and
         perfil["A8_ExigenciaSalarial"] == "Salario Medio"):
         bonificaciones_sinergia += 4
     #BD8
@@ -417,9 +422,44 @@ def evaluar_aptitud_piloto_nueva(cromosoma_bits):
         perfil["A8_ExigenciaSalarial"] == "Salario Bajo"):
         bonificaciones_sinergia += 6
     #BD11
-    if (perfil["A8_ExigenciaSalarial"] == "Salario Medio" and 
-        perfil["A1_Experiencia"] == "Establecido"):
-        bonificaciones_sinergia+= 2
+    #if (perfil["A8_ExigenciaSalarial"] == "Salario Medio" and 
+    #    perfil["A1_Experiencia"] == "Establecido"):
+    #    bonificaciones_sinergia+= 2
+    #BD12
+    if (perfil["A1_Experiencia"] == "Joven Promesa" and
+        perfil["A5_FeedbackTecnico"] == "Adecuada" and
+        perfil["A4_ConsistenciaCarrera"] == "Algo Consistente" and
+        perfil["A6_MentalidadEquipo"] in ["Jugador de Equipo Nato", "Totalmente Alineado con el Equipo"] and
+        perfil["A8_ExigenciaSalarial"] == "Salario Bajo"):
+        bonificaciones_sinergia += 5
+    #BD13
+    if (perfil["A2_EstiloConduccion"] == "Técnico y Metódico" and
+        perfil["A5_FeedbackTecnico"] in ["Fuerte", "Adecuada"] and
+        perfil["A7_EncajeMarca"] == "Encaje Aceptable"):
+        bonificaciones_sinergia += 4
+    #BD14
+    if (perfil["A6_MentalidadEquipo"] == "Equilibrado" and
+        perfil["A5_FeedbackTecnico"] in ["Adecuada", "Fuerte"] and
+        perfil["A8_ExigenciaSalarial"] == "Salario Medio" and
+        perfil["A1_Experiencia"] in ["Establecido", "Joven Promesa"]):
+        bonificaciones_sinergia += 5
+    #BD15
+    if (perfil["A1_Experiencia"] == "Novato" and
+        perfil["A6_MentalidadEquipo"] in ["Equilibrado", "Jugador de Equipo Nato"] and
+        perfil["A8_ExigenciaSalarial"] == "Salario Muy Bajo" and
+        perfil["A4_ConsistenciaCarrera"] == "Algo Consistente"):
+        bonificaciones_sinergia += 4
+    #BD16
+    if (perfil["A1_Experiencia"] == "Joven Promesa" and
+        perfil["A3_VelocidadPura"] in ["Buena", "Muy Buena"] and
+        perfil["A5_FeedbackTecnico"] in ["Adecuada", "Fuerte"] and
+        perfil["A8_ExigenciaSalarial"] in ["Salario Bajo", "Salario Medio"]):
+        bonificaciones_sinergia += 5
+    # BD17
+    if (perfil["A3_VelocidadPura"] == "Muy Buena" and
+        perfil["A5_FeedbackTecnico"] in ["Fuerte", "Excepcional"] and
+        perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]):
+        bonificaciones_sinergia += 5
 
 
     # --- Penalizaciones agrupadas escalonadas ---
@@ -438,12 +478,12 @@ def evaluar_aptitud_piloto_nueva(cromosoma_bits):
     if perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]: penalizador_incoherente += 1
     if penalizador_incoherente >= 2:
         penalizaciones += 9 + (penalizador_incoherente - 2) * 2
-    #INC_AVANZADA3 - Penalización por “perfil Dios”
+    #INC3 - Penalización por “perfil Dios”
     if (BD1_aplicado and
         perfil["A3_VelocidadPura"] == "Excepcional" and
         perfil["A4_ConsistenciaCarrera"] == "Extremadamente Consistente"):
         penalizaciones += 6
-    #INC_AVANZADA4 - veterano perfecto es raro
+    #INC4 - veterano perfecto es raro
     if (perfil["A1_Experiencia"] == "Veterano" and
         perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"] and
         perfil["A4_ConsistenciaCarrera"] in ["Muy Consistente", "Extremadamente Consistente"] and
@@ -453,7 +493,48 @@ def evaluar_aptitud_piloto_nueva(cromosoma_bits):
     #INC_5
     if (perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico" and
         perfil["A1_Experiencia"] == "Veterano"):
+        penalizaciones += 2
+   # INC6 – penaliza pilotos con poca experiencia muy adaptables
+    if perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico" and perfil["A1_Experiencia"] in ["Novato", "Joven Promesa"]:
         penalizaciones += 3
-
+    # INC7 – penaliza salario medio con poco merito
+    if (perfil["A8_ExigenciaSalarial"] == "Salario Medio" and
+        perfil["A1_Experiencia"] in ["Novato", "Joven Promesa"] and
+        perfil["A5_FeedbackTecnico"] in ["Adecuada", "Limitada"]):
+        penalizaciones += 4
+    # INC8 – penaliza leve por mucho de salario medio
+    if perfil["A8_ExigenciaSalarial"] == "Salario Medio":
+        penalizaciones += 1
+    # INC9 – feedback tccnico exagerado en joven promesa
+    if perfil["A1_Experiencia"] in ["Novato", "Joven Promesa"] and perfil["A5_FeedbackTecnico"] == "Excepcional":
+        penalizaciones += 4
+    # INC10 – penaliza a joven promesa perfecto y barato
+    if (perfil["A1_Experiencia"] == "Joven Promesa" and
+        perfil["A3_VelocidadPura"] in ["Muy Buena", "Excepcional"] and
+        perfil["A4_ConsistenciaCarrera"] in ["Muy Consistente", "Extremadamente Consistente"] and
+        perfil["A8_ExigenciaSalarial"] in ["Salario Muy Bajo", "Salario Bajo"]):
+        penalizaciones += 6
+    #INC11
+    if (perfil["A1_Experiencia"] == "Establecido" and
+        perfil["A2_EstiloConduccion"] == "Adaptable Camaleónico" and
+        perfil["A5_FeedbackTecnico"] in ["Limitada", "Adecuada"]):
+        penalizaciones += 3
+    #INC12
+    if (perfil["A8_ExigenciaSalarial"] == "Salario Medio" and
+        perfil["A1_Experiencia"] == "Establecido" and
+        (perfil["A4_ConsistenciaCarrera"] == "Extremadamente Consistente" or 
+        perfil["A3_VelocidadPura"] == "Excepcional") and
+        perfil["A5_FeedbackTecnico"] in ["Adecuada", "Fuerte"]):
+        penalizaciones += 4
+    #INC13 – excepcional sin base tecnica o experiencia solida
+    if (perfil["A3_VelocidadPura"] == "Excepcional" and
+        perfil["A1_Experiencia"] in ["Novato", "Joven Promesa"] and
+        perfil["A5_FeedbackTecnico"] in ["Limitada", "Adecuada"]):
+        penalizaciones += 4
+    # INC14 – Excepcional sin alineación de equipo (riesgo de individualismo)
+    if (perfil["A3_VelocidadPura"] == "Excepcional" and
+        perfil["A6_MentalidadEquipo"] in ["Primariamente Individualista", "Equilibrado"]):
+        penalizaciones += 3
+ 
     aptitud_final = max(0, puntaje_base + bonificaciones_individuales + bonificaciones_sinergia - penalizaciones)
     return (aptitud_final,)

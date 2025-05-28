@@ -91,11 +91,14 @@ stats.register("max", numpy.max)
 
 # --- 5. Definición de Parámetros del Algoritmo y Ejecución ---
 def ejecutar_ag():
+    
     # Parámetros del algoritmo genético
-    TAM_POBLACION = 100  # Tamaño de la población 
+    # TODO : empezar a iterar con distintos parametros
+
+    TAM_POBLACION = 150  # Tamaño de la población 
     PROBABILIDAD_CRUCE = 0.7 # Probabilidad de que dos individuos se crucen (CXPB)
     PROBABILIDAD_MUTACION = 0.3 # Probabilidad de que un individuo mute (MUTPB)
-    NUM_GENERACIONES = 100 # Número de generaciones a ejecutar (NGEN)
+    NUM_GENERACIONES = 150 # Número de generaciones a ejecutar (NGEN)
 
     print(f"Iniciando evolución con {NUM_GENERACIONES} generaciones y población de {TAM_POBLACION} individuos...")
     print(f"Probabilidad de Cruce: {PROBABILIDAD_CRUCE}, Probabilidad de Mutación: {PROBABILIDAD_MUTACION}")
