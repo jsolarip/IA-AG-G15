@@ -37,7 +37,7 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 #    DEAP llamará a esta función pasándole un individuo (un cromosoma de 16 bits).
 
 #toolbox.register("evaluate", evaluar_aptitud_piloto)
-toolbox.register("evaluate", evaluar_aptitud_piloto_nueva)
+toolbox.register("evaluate", evaluar_aptitud_piloto_nueva) # esta es la nueva, la original esta comentada arriba
 
 
 # B. Operador de Cruce (Crossover):
