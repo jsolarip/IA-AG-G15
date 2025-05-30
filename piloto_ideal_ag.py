@@ -45,7 +45,9 @@ toolbox.register("evaluate", evaluar_aptitud_piloto_nueva) # esta es la nueva, l
 #    Cuando DEAP necesite cruzar dos individuos padres, usará esta función.
 #    Hay otros tipos de cruce como cxOnePoint (usado en el ejemplo de Halloween), cxUniform, etc.
 #    cxTwoPoint suele funcionar bien para cromosomas binarios.
-toolbox.register("mate", tools.cxTwoPoint)
+#toolbox.register("mate", tools.cxTwoPoint)
+
+toolbox.register("mate", tools.cxOnePoint) #cruzamiento simple
 
 # C. Operador de Mutación:
 #    Registramos la operación de mutación. 'tools.mutFlipBit' es común para cromosomas binarios.
@@ -61,7 +63,10 @@ toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
 #    para la siguiente generación (o para cruce), DEAP tomará 3 individuos al azar de la
 #    población actual y elegirá al mejor de esos 3 (el que tenga mayor aptitud).
 #    Es un método de selección común y efectivo.
-toolbox.register("select", tools.selTournament, tournsize=3) 
+#toolbox.register("select", tools.selTournament, tournsize=3) 
+
+# AHORA (Selección por ruleta):
+toolbox.register("select", tools.selRoulette)
 
 # --- 4. Configuración de Estadísticas y Salón de la Fama (Hall of Fame) ---
 
@@ -154,13 +159,13 @@ if __name__ == "__main__":
     max_fitness = libro_estadisticas.select("max")
 
     plt.figure(figsize=(10, 6))
-    plt.plot(gen, avg_fitness, label="Aptitud Promedio")
-    plt.plot(gen, max_fitness, label="Aptitud Máxima")
+    plt.plot(gen, avg_fitness, label="Aptitud Promedio", color='red')
+    plt.plot(gen, max_fitness, label="Aptitud Máxima", color = 'violet')
     plt.xlabel("Generación")
     plt.ylabel("Aptitud")
     plt.legend(loc="lower right")
     plt.title("Evolución de la Aptitud a lo largo de las Generaciones")
     plt.grid(True)
-    plt.show()
+    plt.savefig("grafico_piloto.png")
 
     print("\nEvolución completada.")

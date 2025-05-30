@@ -296,7 +296,7 @@ def imprimir_perfil_piloto(cromosoma_bits):
     
     #print(f"Aptitud Bruta (ejemplo): {evaluar_aptitud_piloto(cromosoma_bits)[0]}") # Solo para mostrar, la aptitud se asigna en el AG
 
-    print(f"Aptitud Bruta NUEVA: {evaluar_aptitud_piloto_nueva(cromosoma_bits)[0]}") # Solo para mostrar, la aptitud se asigna en el AG
+ #   print(f"Aptitud Bruta NUEVA: {evaluar_aptitud_piloto_nueva(cromosoma_bits)[0]}") # Solo para mostrar, la aptitud se asigna en el AG
     
     print("-----------------------------")
 
