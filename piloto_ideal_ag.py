@@ -63,10 +63,14 @@ toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
 #    para la siguiente generación (o para cruce), DEAP tomará 3 individuos al azar de la
 #    población actual y elegirá al mejor de esos 3 (el que tenga mayor aptitud).
 #    Es un método de selección común y efectivo.
-#toolbox.register("select", tools.selTournament, tournsize=3) 
+toolbox.register("select", tools.selTournament, tournsize=3) 
 
 # AHORA (Selección por ruleta):
-toolbox.register("select", tools.selRoulette)
+#toolbox.register("select", tools.selRoulette)
+
+#Ranking
+#toolbox.register("select", tools.selBest)
+
 
 # --- 4. Configuración de Estadísticas y Salón de la Fama (Hall of Fame) ---
 
@@ -120,17 +124,24 @@ def ejecutar_ag():
     # lambda_ = número de hijos a generar en cada generación.
     
     # El objeto 'logbook' registrará las estadísticas de cada generación.
-    pop, logbook = algorithms.eaMuPlusLambda(
-        pop,                     # La población inicial
-        toolbox,                 # Nuestra caja de herramientas con los operadores registrados
-        mu=TAM_POBLACION,        # Número de individuos a seleccionar para la siguiente generación
-        lambda_=TAM_POBLACION,   # Número de hijos a generar
-        cxpb=PROBABILIDAD_CRUCE, # Probabilidad de cruce
-        mutpb=PROBABILIDAD_MUTACION, # Probabilidad de mutación
-        ngen=NUM_GENERACIONES,   # Número de generaciones
-        stats=stats,             # Objeto para registrar estadísticas
-        halloffame=hof,          # Objeto para guardar al mejor(es) individuo(s)
-        verbose=True             # Imprime información del progreso en cada generación
+    pop, logbook = algorithms.eaSimple(
+        pop, toolbox,
+    cxpb=PROBABILIDAD_CRUCE,
+    mutpb=PROBABILIDAD_MUTACION,
+    ngen=NUM_GENERACIONES,
+    stats=stats,
+    halloffame=hof,
+    verbose=True
+#        pop,                     # La población inicial
+ #       toolbox,                 # Nuestra caja de herramientas con los operadores registrados
+  #      mu=TAM_POBLACION,        # Número de individuos a seleccionar para la siguiente generación
+  #      lambda_=TAM_POBLACION,   # Número de hijos a generar
+  #      cxpb=PROBABILIDAD_CRUCE, # Probabilidad de cruce
+  #      mutpb=PROBABILIDAD_MUTACION, # Probabilidad de mutación
+  #      ngen=NUM_GENERACIONES,   # Número de generaciones
+  #      stats=stats,             # Objeto para registrar estadísticas
+  #      halloffame=hof,          # Objeto para guardar al mejor(es) individuo(s)
+  #      verbose=True             # Imprime información del progreso en cada generación
     )
 
     return pop, logbook, hof
