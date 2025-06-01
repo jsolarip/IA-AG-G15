@@ -45,32 +45,18 @@ toolbox.register("evaluate", evaluar_aptitud_piloto_nueva) # esta es la nueva, l
 #    Cuando DEAP necesite cruzar dos individuos padres, usará esta función.
 #    Hay otros tipos de cruce como cxOnePoint (usado en el ejemplo de Halloween), cxUniform, etc.
 #    cxTwoPoint suele funcionar bien para cromosomas binarios.
-#toolbox.register("mate", tools.cxTwoPoint)
-
-toolbox.register("mate", tools.cxOnePoint) #cruzamiento simple
+toolbox.register("mate", tools.cxTwoPoint) 
 
 # C. Operador de Mutación:
-#    Registramos la operación de mutación. 'tools.mutFlipBit' es común para cromosomas binarios.
-#    Esta función toma un individuo y voltea cada uno de sus bits (de 0 a 1 o de 1 a 0)
-#    con una probabilidad independiente 'indpb'.
-#    'indpb=0.05' significa que cada bit tiene un 5% de probabilidad de ser volteado.
-#    Este valor (0.05) es un hiperparámetro que podrías ajustar más adelante.
 toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
 
 # D. Operador de Selección:
-#    Registramos el método de selección. 'tools.selTournament' implementa la selección por torneo.
-#    'tournsize=3' significa que para seleccionar un individuo
-#    para la siguiente generación (o para cruce), DEAP tomará 3 individuos al azar de la
-#    población actual y elegirá al mejor de esos 3 (el que tenga mayor aptitud).
-#    Es un método de selección común y efectivo.
-toolbox.register("select", tools.selTournament, tournsize=3) 
+# Método Torneo, ir modificando el tournsize según la configuración de cada corrida
+toolbox.register("select", tools.selTournament, tournsize=40) 
 
-# AHORA (Selección por ruleta):
+# Ir cambiando según la configuración de cada corrida
+# Selección por ruleta:
 #toolbox.register("select", tools.selRoulette)
-
-#Ranking
-#toolbox.register("select", tools.selBest)
-
 
 # --- 4. Configuración de Estadísticas y Salón de la Fama (Hall of Fame) ---
 
@@ -78,7 +64,7 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 #    'tools.HallOfFame(1)' crea un objeto que almacenará al mejor individuo encontrado
 #    a lo largo de todas las generaciones. El '1' significa que solo guardará al mejor.
 #    Si quisieras guardar los 5 mejores, usarías tools.HallOfFame(5).
-hof = tools.HallOfFame(7)
+hof = tools.HallOfFame(3)
 
 # B. Estadísticas:
 #    'tools.Statistics' nos permite llevar un registro de ciertas métricas de la
@@ -104,10 +90,10 @@ def ejecutar_ag():
     # Parámetros del algoritmo genético
     # TODO : empezar a iterar con distintos parametros
 
-    TAM_POBLACION = 150  # Tamaño de la población 
+    TAM_POBLACION = 100  # Tamaño de la población 
     PROBABILIDAD_CRUCE = 0.7 # Probabilidad de que dos individuos se crucen (CXPB)
     PROBABILIDAD_MUTACION = 0.3 # Probabilidad de que un individuo mute (MUTPB)
-    NUM_GENERACIONES = 150 # Número de generaciones a ejecutar (NGEN)
+    NUM_GENERACIONES = 100 # Número de generaciones a ejecutar (NGEN)
 
     print(f"Iniciando evolución con {NUM_GENERACIONES} generaciones y población de {TAM_POBLACION} individuos...")
     print(f"Probabilidad de Cruce: {PROBABILIDAD_CRUCE}, Probabilidad de Mutación: {PROBABILIDAD_MUTACION}")
@@ -171,7 +157,6 @@ if __name__ == "__main__":
 
     plt.figure(figsize=(10, 6))
     plt.plot(gen, avg_fitness, label="Aptitud Promedio", color='red')
-    plt.plot(gen, max_fitness, label="Aptitud Máxima", color = 'violet')
     plt.xlabel("Generación")
     plt.ylabel("Aptitud")
     plt.legend(loc="lower right")
